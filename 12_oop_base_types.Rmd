@@ -1,0 +1,115 @@
+---
+title: "12. OOP Base Types"
+output: html_notebook
+---
+
+```{r include=FALSE}
+source("set_up.R", local = TRUE)
+```
+
+- **S3** - simple and common - is used throughout base R
+- **R6** - encapsulated - is used to escape Rs copy-on-modify semantics. Used in cases such as modelling data that exist independently of R such as web APIs
+- **S4** - similar to S3 but more formal and strict - is a rigorous system that forces developers to think about the design. This is suitable for large projects with many contributor. S4 was a rewrite of S3 to make it more formal.
+
+Process of finding the correct method for a given class is **method dispatch**.
+
+In **encapsulated OOP**, methods belong to objects or classes, and method calls typically look like `object.method(arg1, arg2)`. This is called encapsulated because the object encapsulates both data (with fields) and behaviour (with methods), and is the paradigm found in most popular languages.
+
+In **functional OOP**, methods belong to generic functions, and method calls look like ordinary function calls: `generic(object, arg2, arg3)`. This is called functional because from the outside it looks like a regular function call, and internally the components are also functions.
+
+```{r eval=FALSE}
+sloop::otype(1:10)
+#> "base"
+
+sloop::otype(mtcars)
+#> "S3"
+
+mle_obj <- stats4::mle(function(x = 1) (x - 2) ^ 2)
+sloop::otype(mle_obj)
+#> "S4"
+```
+
+## Base types
+
+There is a difference between base object and OO objects in R. Base objects do not have a class, but OO objects do.
+
+```{r eval=FALSE}
+# A base object:
+is.object(1:10)
+#> [1] FALSE
+sloop::otype(1:10)
+#> [1] "base"
+
+# An OO object
+is.object(mtcars)
+#> [1] TRUE
+sloop::otype(mtcars)
+#> [1] "S3"
+```
+
+```{r eval=FALSE}
+attr(1:10, "class")
+#> NULL
+
+attr(mtcars, "class")
+#> "data.frame"
+```
+
+Only OO objects have a class attribute, every object has a base type
+
+```{r eval=FALSE}
+typeof(1:10)
+#> "integer"
+
+typeof(mtcars)
+#> "list"
+```
+
+```{r eval=FALSE}
+typeof(NULL)
+#> [1] "NULL"
+typeof(1L)
+#> [1] "integer"
+typeof(1i)
+#> [1] "complex"
+```
+
+```{r eval=FALSE}
+typeof(mean)
+#> [1] "closure"
+typeof(`[`)
+#> [1] "special"
+typeof(sum)    
+#> [1] "builtin"
+```
+
+```{r eval=FALSE}
+typeof(globalenv())
+#> [1] "environment"
+```
+
+```{r eval=FALSE}
+typeof(quote(a))
+#> [1] "symbol"
+typeof(quote(a + 1))
+#> [1] "language"
+typeof(formals(mean))
+#> [1] "pairlist"
+```
+
+Numeric can mean double or integer
+
+```{r, eval=FALSE}
+sloop::s3_class(1)
+#> [1] "double"  "numeric"
+sloop::s3_class(1L)
+#> [1] "integer" "numeric"
+```
+
+```{r eval=FALSE}
+typeof(factor("x"))
+#> [1] "integer"
+is.numeric(factor("x"))
+#> [1] FALSE
+```
+
